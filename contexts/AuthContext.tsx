@@ -1,6 +1,7 @@
-import { useRouter } from "next/router";
-import { setCookie } from 'nookies'
-import { createContext, ReactNode, useContext, useState } from "react";
+import { request } from "http";
+import Router from "next/router";
+import { setCookie, parseCookies } from 'nookies'
+import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
 
 type User = {
@@ -17,7 +18,7 @@ type SignInCredentials = {
 type AuthContextData = {
     signIn(credentials: SignInCredentials): Promise<void>;
     isAuthenticated: boolean;
-    user: User;
+    user: User | undefined;
 }
 
 const AuthContext = createContext({} as AuthContextData)
@@ -27,10 +28,20 @@ interface AuthProviderProps {
 }
 
 export function AuthProvider({children}: AuthProviderProps) {
-    const router = useRouter()
     const [user, setUser] = useState<User>()
 
-    const isAuthenticated = !!user;
+    const isAuthenticated = !!user;    
+
+    useEffect(() => {
+        const { 'nextauth.token': token } = parseCookies()
+
+        if (token) {
+            api.get('/me').then((response) => {
+                const { email, permissions, roles } = response.data
+                setUser({ email, permissions, roles })
+            })
+        }
+    }, [])
 
     async function signIn({ email, password }: SignInCredentials) {
         try {
@@ -56,7 +67,13 @@ export function AuthProvider({children}: AuthProviderProps) {
                 roles
             })
 
-            router.push('/dashboard')
+            api.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            // api.interceptors.request.use(request => {
+            //     request.headers = { 'Authorization': 'Bearer '+token}
+            //     return request
+            // })
+
+            Router.push('/dashboard')
 
         } catch(error) {
             console.log(error)

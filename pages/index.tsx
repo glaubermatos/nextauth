@@ -1,7 +1,8 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
+import { api } from '../services/api'
 
 import styles from '../styles/Home.module.css'
 
@@ -19,6 +20,7 @@ const Home: NextPage = () => {
       password
     }
 
+    console.log(data)
     await signIn(data)
   }
 
