@@ -7,6 +7,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { api } from '../services/api'
 
 import styles from '../styles/Home.module.css'
+import { WithSSRGuest } from '../utils/withSSRGuest'
 
 const Home: NextPage = () => {
   const { signIn } = useAuth()
@@ -43,20 +44,9 @@ const Home: NextPage = () => {
 
 export default Home
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
-  const cookies = parseCookies(ctx)
-  const { 'nextauth.token': token } = cookies
-
-  if (token) {
-    return {
-      redirect: {
-        destination: '/dashboard',
-        permanent: false,
-      }
-    }
-  }
-
+export const getServerSideProps = WithSSRGuest(async (ctx) => {
+  
   return {
     props: {}
   }  
-}
+})
