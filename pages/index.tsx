@@ -1,6 +1,8 @@
-import type { NextPage } from 'next'
+import type { GetServerSideProps, NextPage } from 'next'
 import Head from 'next/head'
-import { FormEvent, useEffect, useState } from 'react'
+import Router from 'next/router'
+import { parseCookies } from 'nookies'
+import { FormEvent, useState } from 'react'
 import { useAuth } from '../contexts/AuthContext'
 import { api } from '../services/api'
 
@@ -40,3 +42,21 @@ const Home: NextPage = () => {
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => {
+  const cookies = parseCookies(ctx)
+  const { 'nextauth.token': token } = cookies
+
+  if (token) {
+    return {
+      redirect: {
+        destination: '/dashboard',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {}
+  }  
+}
