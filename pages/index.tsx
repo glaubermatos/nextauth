@@ -45,7 +45,6 @@ const Home: NextPage = () => {
 export default Home
 
 export const getServerSideProps = WithSSRGuest(async (ctx) => {
-  
   return {
     props: {}
   }  

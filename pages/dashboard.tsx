@@ -2,6 +2,7 @@ import Head from "next/head"
 import { useEffect } from "react"
 import { useAuth } from "../contexts/AuthContext"
 import { api } from "../services/api"
+import { WithSSRAuth } from "../utils/withSSRAuth"
 
 export default function Dashboard() {
     const { user, isAuthenticated } = useAuth()
@@ -25,3 +26,9 @@ export default function Dashboard() {
         </div>
     )
 }
+
+export const getServerSideProps = WithSSRAuth(async (ctx) => {
+    return {
+        props: {}
+    }
+})
