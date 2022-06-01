@@ -1,6 +1,7 @@
 import { rejects } from "assert";
 import axios, { AxiosError } from "axios";
 import { setCookie, parseCookies } from 'nookies'
+import { signOut } from "../contexts/AuthContext";
 
 type failedRequestsQueueProps = {
     onSuccess: (token: string) => void;
@@ -80,6 +81,9 @@ api.interceptors.response.use(response => {
 
         } else {
             // deslogar o usuário
+            signOut()
         }
     }
+
+    return Promise.reject(error)
 })
