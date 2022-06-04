@@ -3,10 +3,7 @@ import axios, { AxiosError } from "axios";
 import { GetServerSidePropsContext } from "next";
 import { setCookie, parseCookies } from 'nookies'
 import { signOut } from "../contexts/AuthContext";
-
-type setupAPIClientProps = {
-    ctx?: GetServerSidePropsContext;
-}
+import { AuthTokenError } from "./errors/AuthTokenError";
 
 type failedRequestsQueueProps = {
     onSuccess: (token: string) => void;
@@ -94,9 +91,10 @@ export function setupAPIClient(ctx = undefined) {
     
             } else {
                 // deslogar o usuário
-    
                 if (process.browser) {
                     signOut()
+                } else {
+                    return Promise.reject(new AuthTokenError())
                 }
             }
         }
