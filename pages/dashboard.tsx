@@ -12,7 +12,7 @@ import { AuthTokenError } from "../services/errors/AuthTokenError"
 import { WithSSRAuth } from "../utils/withSSRAuth"
 
 export default function Dashboard() {
-    const { user } = useAuth()
+    const { user, signOut } = useAuth()
 
     const userCanSeeMetrics = useCan({
         permissions: ['metrics.list'],
@@ -34,6 +34,8 @@ export default function Dashboard() {
             </Head>
 
             <h1>dashboard: {user?.email}</h1>
+
+            <button onClick={signOut}>sign out</button>
             
             { userCanSeeMetrics && <div>Métricas</div>}
 
