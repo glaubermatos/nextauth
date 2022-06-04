@@ -3,6 +3,7 @@ import Head from "next/head"
 import { destroyCookie } from "nookies"
 import { useEffect } from "react"
 import { moveMessagePortToContext } from "worker_threads"
+import { Can } from "../components/Can"
 import { useAuth } from "../contexts/AuthContext"
 import { useCan } from "../hooks/useCan"
 import { setupAPIClient } from "../services/api"
@@ -33,7 +34,12 @@ export default function Dashboard() {
             </Head>
 
             <h1>dashboard: {user?.email}</h1>
+            
             { userCanSeeMetrics && <div>Métricas</div>}
+
+            <Can permissions={['metrics.list']}>
+                <div>Métricas component</div>
+            </Can>
         </div>
     )
 }
